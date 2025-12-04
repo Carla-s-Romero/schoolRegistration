@@ -1,0 +1,24 @@
+{
+  "name": "schoolregistration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Carla-s-Romero/schoolRegistration.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Carla-s-Romero/schoolRegistration/issues"
+  },
+  "homepage": "https://github.com/Carla-s-Romero/schoolRegistration#readme",
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
+}
