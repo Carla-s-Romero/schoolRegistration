@@ -1,3 +1,25 @@
+// Função de validação de CNPJ
+function validaCNPJ(cnpj) {
+    var b = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    var c = String(cnpj).replace(/[^\d]/g, '');
+    
+    if(c.length !== 14)
+        return false;
+
+    if(/0{14}/.test(c))
+        return false;
+
+    for (var i = 0, n = 0; i < 12; n += c[i] * b[++i]);
+    if(c[12] != (((n %= 11) < 2) ? 0 : 11 - n))
+        return false;
+
+    for (var i = 0, n = 0; i <= 12; n += c[i] * b[i++]);
+    if(c[13] != (((n %= 11) < 2) ? 0 : 11 - n))
+        return false;
+
+    return true;
+}
+
 // Elementos do DOM
 const modal = document.getElementById('modalInscricao');
 const btnsInscrever = [
@@ -80,6 +102,18 @@ cnpjInput.addEventListener('input', (e) => {
     e.target.value = value;
 });
 
+// Validação de CNPJ em tempo real
+cnpjInput.addEventListener('blur', (e) => {
+    const cnpjLimpo = e.target.value.replace(/\D/g, '');
+    if (cnpjLimpo.length > 0 && !validaCNPJ(cnpjLimpo)) {
+        e.target.style.borderColor = '#ef4444';
+        e.target.setCustomValidity('CNPJ inválido');
+    } else {
+        e.target.style.borderColor = '#d1d5db';
+        e.target.setCustomValidity('');
+    }
+});
+
 // Máscara Telefone
 telefoneInput.addEventListener('input', (e) => {
     let value = e.target.value.replace(/\D/g, '');
@@ -119,8 +153,10 @@ formInscricao.addEventListener('submit', (e) => {
     
     // Validar CNPJ
     const cnpjLimpo = formData.cnpj.replace(/\D/g, '');
-    if (cnpjLimpo.length !== 14) {
-        alert('Por favor, insira um CNPJ válido com 14 dígitos.');
+    if (!validaCNPJ(cnpjLimpo)) {
+        alert('Por favor, insira um CNPJ válido.');
+        cnpjInput.focus();
+        cnpjInput.style.borderColor = '#ef4444';
         return;
     }
     
