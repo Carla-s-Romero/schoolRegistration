@@ -1,3 +1,6 @@
+// Importar funções utilitárias (se estiver usando módulos)
+// Para uso no navegador, as funções podem ser incluídas via script tag
+
 // Função de validação de CNPJ
 function validaCNPJ(cnpj) {
     var b = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
@@ -215,7 +218,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // Validação de email em tempo real
 const emailInput = document.getElementById('email');
 emailInput.addEventListener('blur', (e) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Regex que aceita + e subdomínios
+    const emailRegex = /^[^\s@]+(\+[^\s@]+)?@[^\s@]+\.[^\s@]+$/;
     if (e.target.value && !emailRegex.test(e.target.value)) {
         e.target.style.borderColor = '#ef4444';
     } else {
