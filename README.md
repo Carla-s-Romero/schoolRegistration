@@ -90,4 +90,4 @@ npm test
 ```
 
 ## 📜 Licença
-Este projeto está licenciado sob os termos da licença MIT
+Este projeto está licenciado sob os termos da licença MIT.
