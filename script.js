@@ -33,11 +33,14 @@ const formInscricao = document.getElementById('formInscricao');
 const header = document.getElementById('header');
 
 // Abrir modal
+// Abrir modal
 btnsInscrever.forEach(btn => {
-    btn.addEventListener('click', () => {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    });
+    if (btn) {  // ← Adicione esta verificação!
+        btn.addEventListener('click', () => {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    }
 });
 
 // Fechar modal
