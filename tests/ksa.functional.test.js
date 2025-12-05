@@ -1,16 +1,42 @@
 const { Builder, By, until } = require('selenium-webdriver');
 const fs = require('fs');
 const path = require('path');
+const { pathToFileURL } = require('url');
 
 // Timeout estendido para 30s
 jest.setTimeout(30000);
 
 // Helper para Screenshots
 async function tirarScreenshot(driver, nomeArquivo) {
-    const imagem = await driver.takeScreenshot();
     const dir = 'evidencias';
     if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-    fs.writeFileSync(path.join(dir, `${nomeArquivo}.png`), imagem, 'base64');
+    // Primeiro, tentar aceitar um alert nativo caso esteja aberto (previne UnexpectedAlertOpenError)
+    try {
+        const alerta = await driver.switchTo().alert();
+        await alerta.accept();
+        await driver.sleep(200);
+    } catch (e) {
+        // sem alert — ignorar
+    }
+
+    // Agora tirar a screenshot normalmente
+    try {
+        const imagem = await driver.takeScreenshot();
+        fs.writeFileSync(path.join(dir, `${nomeArquivo}.png`), imagem, 'base64');
+        return;
+    } catch (err) {
+        // Fallback: se ainda falhar, tentar aceitar alert e tentar novamente
+        try {
+            const alerta = await driver.switchTo().alert();
+            await alerta.accept();
+            await driver.sleep(200);
+            const imagem = await driver.takeScreenshot();
+            fs.writeFileSync(path.join(dir, `${nomeArquivo}.png`), imagem, 'base64');
+            return;
+        } catch (innerErr) {
+            throw err;
+        }
+    }
 }
 
 describe('Suite de Testes KSA - SF-001, SF-002, SF-003', () => {
@@ -40,7 +66,8 @@ describe('Suite de Testes KSA - SF-001, SF-002, SF-003', () => {
 
     // Antes de cada teste: Carrega página -> Clica Inscrever -> Espera Modal
     beforeEach(async () => {
-        await driver.get('file:///D:/Vitor/Faculdade/Treino/schoolRegistration/index.html');
+        const indexFileUrl = pathToFileURL(path.resolve(__dirname, '..', 'index.html')).href;
+        await driver.get(indexFileUrl);
         const btnInscrever = await driver.findElement(By.id('btnInscrever'));
         await btnInscrever.click();
         
